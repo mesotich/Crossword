@@ -16,17 +16,17 @@ public class Snapshot {
 
     public Snapshot(Snapshot snapshot) {
         Set<Coordinate> setForCopy = snapshot.coordinates;
-        Map<Word,Coordinate> mapForCopy = snapshot.map;
+        Map<Word, Coordinate> mapForCopy = snapshot.map;
         this.coordinates = new HashSet<>();
         this.map = new HashMap<>();
-        for (Coordinate crd:setForCopy
-             ) {
-            this.coordinates.add(new Coordinate(crd.getX(),crd.getY(),crd.getCh(),crd.isAllow()));
+        for (Coordinate crd : setForCopy
+        ) {
+            this.coordinates.add(new Coordinate(crd.getX(), crd.getY(), crd.getCh(), crd.isAllow()));
         }
-        for (Map.Entry<Word,Coordinate> entry:mapForCopy.entrySet()
-             ) {
+        for (Map.Entry<Word, Coordinate> entry : mapForCopy.entrySet()
+        ) {
             this.map.put(entry.getKey()
-                    ,new Coordinate(entry.getValue().getX(),entry.getValue().getY(),entry.getValue().getCh(), entry.getValue().isAllow()));
+                    , new Coordinate(entry.getValue().getX(), entry.getValue().getY(), entry.getValue().getCh(), entry.getValue().isAllow()));
         }
     }
 
@@ -119,7 +119,6 @@ public class Snapshot {
                 if (coordinate == null)
                     coordinate = new Coordinate(x0, y0);
                 result.add(coordinate);
-                //coordinates.add(coordinate);
             }
         }
         return result;
