@@ -119,7 +119,7 @@ public class Snapshot {
                 if (coordinate == null)
                     coordinate = new Coordinate(x0, y0);
                 result.add(coordinate);
-                coordinates.add(coordinate);
+                //coordinates.add(coordinate);
             }
         }
         return result;
