@@ -2,6 +2,7 @@ package view;
 
 import model.Coordinate;
 import model.Snapshot;
+
 import java.util.Set;
 
 public class ConsoleView implements View {
@@ -13,8 +14,6 @@ public class ConsoleView implements View {
         int[][] change = getMinMaxCoordinates(snapshot);
         x = change[1][0] - change[0][0];
         y = change[1][1] - change[0][1];
-        // System.out.println(x);
-        // System.out.println(y);
         dx = -change[0][0];
         dy = -change[0][1];
         char[][] matrix = new char[y + 1][x + 1];

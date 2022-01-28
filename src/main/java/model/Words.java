@@ -26,34 +26,6 @@ public class Words {
         }
     }
 
-    public List<Word> getIntersection(Word word) {
-        List<Word> result = new ArrayList<>();
-        List<Word> searchList = word.getDirection().equals(Direction.HORIZONTAL)
-                ? verticalList
-                : horizontalList;
-        for (int i = 0; i < word.getWord().length(); i++) {
-            char ch = word.getChar(i);
-            for (Word value : searchList) {
-                if (value.getWord().contains(String.valueOf(ch)))
-                    result.add(value);
-            }
-        }
-        return result;
-    }
-//   // public List<Word> getIntersection(Word word, int index) {
-//        List<Word> result = new ArrayList<>();
-//        List<Word> searchList = word.getDirection().equals(Direction.HORIZONTAL)
-//                ? verticalList
-//                : horizontalList;
-//        char ch = word.getChar(index);
-//        for (Word w : searchList
-//        ) {
-//            if (!word.getWord().equals(w.getWord()) && w.containsChar(ch))
-//                result.add(w);
-//        }
-//        return result;
-//    }
-
     public List<Word> getHorizontalList() {
         return horizontalList;
     }
