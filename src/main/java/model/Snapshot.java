@@ -153,7 +153,7 @@ public class Snapshot {
         return false;
     }
 
-    public void offNeighbours(Coordinate coordinate) {
+    private void offNeighbours(Coordinate coordinate) {
         Coordinate crd;
         int x = coordinate.getX();
         int y = coordinate.getY();
@@ -167,6 +167,32 @@ public class Snapshot {
                 crd.setAllow(false);
             }
         }
+    }
+
+
+
+    public int getSquare() {
+        int minX = 0, minY = 0;
+        int maxX = 0, maxY = 0;
+        int x, y;
+        char ch;
+        for (Coordinate crd : coordinates
+        ) {
+            x = crd.getX();
+            y = crd.getY();
+            ch = crd.getCh();
+            if (ch != ' ') {
+                if (x < minX)
+                    minX = x;
+                if (x > maxX)
+                    maxX = x;
+                if (y < minY)
+                    minY = y;
+                if (y > maxY)
+                    maxY = y;
+            }
+        }
+        return (maxX-minX+1)*(maxY-minY+1);
     }
 
     @Override
