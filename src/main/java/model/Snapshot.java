@@ -35,18 +35,29 @@ public class Snapshot {
     }
 
     public void addWord(Word word, Coordinate startCoordinate) {
+        int x, y;
         if (!canInsert(word, startCoordinate))
             return;
         Coordinate coordinate;
         for (int i = 0; i < word.getWord().length(); i++) {
             char ch = word.getChar(i);
-            if (word.getDirection().equals(Direction.HORIZONTAL))
-                coordinate = new Coordinate(startCoordinate.getX() + i, startCoordinate.getY(), ch, true);
-            else
-                coordinate = new Coordinate(startCoordinate.getX(), startCoordinate.getY() + i, ch, true);
-            coordinates.add(coordinate);
+            if (word.getDirection().equals(Direction.HORIZONTAL)) {
+                x = startCoordinate.getX() + i;
+                y = startCoordinate.getY();
+            } else {
+                x = startCoordinate.getX();
+                y = startCoordinate.getY() + i;
+            }
+            coordinate = getCoordinate(x, y);
+            if (coordinate != null) {
+                if (coordinate.getCh() != ' ')
+                    offNeighbours(coordinate);
+                coordinate.setCh(ch);
+            } else {
+                coordinate = new Coordinate(x, y, ch, true);
+                coordinates.add(coordinate);
+            }
         }
-        startCoordinate.setCh(word.getChar(0));
         map.put(word, startCoordinate);
     }
 
@@ -62,7 +73,7 @@ public class Snapshot {
     }
 
     public boolean canInsert(Word word, Coordinate startCoordinate) {
-        if (map.containsKey(word))
+        if (containsWord(word))
             return false;
         Coordinate coordinate;
         for (int i = 0; i < word.getWord().length(); i++) {
@@ -114,11 +125,11 @@ public class Snapshot {
                         x0 = x - j;
                         y0 = y;
                     }
+                    coordinate = getCoordinate(x0, y0);
+                    if (coordinate == null)
+                        coordinate = new Coordinate(x0, y0);
+                    result.add(coordinate);
                 }
-                coordinate = getCoordinate(x0, y0);
-                if (coordinate == null)
-                    coordinate = new Coordinate(x0, y0);
-                result.add(coordinate);
             }
         }
         return result;
@@ -130,5 +141,48 @@ public class Snapshot {
 
     public Map<Word, Coordinate> getMap() {
         return map;
+    }
+
+    private boolean containsWord(Word word) {
+        for (Map.Entry<Word, Coordinate> entry : map.entrySet()
+        ) {
+            if (entry.getKey().getWord().equals(word.getWord())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void offNeighbours(Coordinate coordinate) {
+        Coordinate crd;
+        int x = coordinate.getX();
+        int y = coordinate.getY();
+        for (int i = y - 1; i <= y + 1; i++) {
+            for (int j = x - 1; j <= x + 1; j++) {
+                crd = getCoordinate(j, i);
+                if (crd == null) {
+                    crd = new Coordinate(j, i, ' ', false);
+                    coordinates.add(crd);
+                }
+                crd.setAllow(false);
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Snapshot snapshot = (Snapshot) o;
+        return this.coordinates.equals(snapshot.coordinates) && this.map.equals(snapshot.map);
+    }
+
+    @Override
+    public int hashCode() {
+        int prime = 31;
+        int result = 1;
+        result = prime * result + coordinates.hashCode();
+        result = prime * result + map.hashCode();
+        return result;
     }
 }

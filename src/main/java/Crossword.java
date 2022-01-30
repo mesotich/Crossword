@@ -6,8 +6,7 @@ import model.data.Data;
 import view.ConsoleView;
 import view.View;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 public class Crossword {
 
@@ -17,11 +16,11 @@ public class Crossword {
         Controller controller = new SimpleController(model);
         View view = new ConsoleView();
         controller.start();
-        System.out.println("size = "+model.size());
-        List<Snapshot> list = model.getSnapshots();
-        for (Snapshot snapshot:list
-             ) {
+        Set<Snapshot> list = model.getSnapshots();
+        for (Snapshot snapshot : list
+        ) {
             view.showCrossword(snapshot);
         }
+        System.out.println("size = "+list.size());
     }
 }

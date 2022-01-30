@@ -1,6 +1,7 @@
 package model;
 
-import java.util.List;
+
+import java.util.Set;
 
 public interface Model {
 
@@ -8,5 +9,5 @@ public interface Model {
 
     int size();
 
-    List<Snapshot> getSnapshots();
+    Set<Snapshot> getSnapshots();
 }
