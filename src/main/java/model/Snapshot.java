@@ -58,6 +58,7 @@ public class Snapshot {
                 coordinates.add(coordinate);
             }
         }
+        offStartEnd(word, startCoordinate);
         map.put(word, startCoordinate);
     }
 
@@ -169,7 +170,36 @@ public class Snapshot {
         }
     }
 
-
+    private void offStartEnd(Word word, Coordinate startCoordinate) {
+        Coordinate beforeCoordinate;
+        Coordinate afterCoordinate;
+        int x1, y1, x2, y2;
+        for (int i = -1; i <= 1; i++) {
+            if (word.getDirection().equals(Direction.HORIZONTAL)) {
+                x1 = startCoordinate.getX() - 1;
+                y1 = y2 = startCoordinate.getY() + i;
+                x2 = startCoordinate.getX() + word.getWord().length();
+            } else {
+                x1 = x2 = startCoordinate.getX() + i;
+                y1 = startCoordinate.getY() - 1;
+                y2 = startCoordinate.getY() + word.getWord().length();
+            }
+            beforeCoordinate = getCoordinate(x1, y1);
+            afterCoordinate = getCoordinate(x2, y2);
+            if (beforeCoordinate != null)
+                beforeCoordinate.setAllow(false);
+            else {
+                beforeCoordinate = new Coordinate(x1, y1, ' ', false);
+                coordinates.add(beforeCoordinate);
+            }
+            if (afterCoordinate != null)
+                afterCoordinate.setAllow(false);
+            else {
+                afterCoordinate = new Coordinate(x2, y2, ' ', false);
+                coordinates.add(afterCoordinate);
+            }
+        }
+    }
 
     public int getSquare() {
         int minX = 0, minY = 0;
@@ -192,7 +222,7 @@ public class Snapshot {
                     maxY = y;
             }
         }
-        return (maxX-minX+1)*(maxY-minY+1);
+        return (maxX - minX + 1) * (maxY - minY + 1);
     }
 
     @Override

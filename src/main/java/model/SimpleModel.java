@@ -2,6 +2,7 @@ package model;
 
 import model.data.Data;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ public class SimpleModel implements Model {
     private Data data;
     private Words words;
     private Set<Snapshot> snapshots;
+    private Set<Word> insertWords;
 
     public SimpleModel(Data data) {
         this.data = data;
@@ -21,10 +23,10 @@ public class SimpleModel implements Model {
     public void startBusinessLogic() {
         initialize();
         createSnapshots();
+        long start = System.currentTimeMillis();
         insertWords();
-        insertWords();
-        insertWords();
-        insertWords();
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
     }
 
     private void createSnapshots() {
@@ -38,8 +40,6 @@ public class SimpleModel implements Model {
     private void insertWords() {
         boolean isEnd = true;
         Set<Snapshot> newSnapshots = new HashSet<>();
-        List<Word> insertWords = new ArrayList<>(words.getHorizontalList());
-        insertWords.addAll(words.getVerticalList());
         Set<Word> wordsInSnapshot;
         List<Coordinate> coordinates;
         Snapshot newSnapshot;
@@ -65,6 +65,7 @@ public class SimpleModel implements Model {
         }
         if (!isEnd) {
             snapshots = newSnapshots;
+            insertWords();
         }
     }
 
@@ -72,6 +73,8 @@ public class SimpleModel implements Model {
         words = new Words(data);
         words.fillLists();
         snapshots = new HashSet<>();
+        insertWords = new HashSet<>(words.getHorizontalList());
+        insertWords.addAll(words.getVerticalList());
     }
 
     @Override
