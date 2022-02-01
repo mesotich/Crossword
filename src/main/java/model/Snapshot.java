@@ -36,8 +36,6 @@ public class Snapshot {
 
     public void addWord(Word word, Coordinate startCoordinate) {
         int x, y;
-        if (!canInsert(word, startCoordinate))
-            return;
         Coordinate coordinate;
         for (int i = 0; i < word.getWord().length(); i++) {
             char ch = word.getChar(i);
@@ -77,6 +75,19 @@ public class Snapshot {
         if (containsWord(word))
             return false;
         Coordinate coordinate;
+        if (word.getDirection().equals(Direction.HORIZONTAL)) {
+            coordinate = getCoordinate(startCoordinate.getX() - 1, startCoordinate.getY());
+            if (coordinate != null && coordinate.getCh() != ' ')
+                return false;
+            coordinate = getCoordinate(startCoordinate.getX() + word.getWord().length(), startCoordinate.getY());
+        } else {
+            coordinate = getCoordinate(startCoordinate.getX(), startCoordinate.getY() - 1);
+            if (coordinate != null && coordinate.getCh() != ' ')
+                return false;
+            coordinate = getCoordinate(startCoordinate.getX(), startCoordinate.getY() + word.getWord().length());
+        }
+        if (coordinate != null && coordinate.getCh() != ' ')
+            return false;
         for (int i = 0; i < word.getWord().length(); i++) {
             char ch = word.getChar(i);
             if (word.getDirection().equals(Direction.HORIZONTAL))

@@ -18,7 +18,7 @@ public abstract class Data {
 
     protected void addString(String line) {
         if (!storage.contains(line))
-            storage.add(line);
+            storage.add(line.toUpperCase());
     }
 
     protected abstract void loadData();

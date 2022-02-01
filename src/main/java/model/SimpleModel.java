@@ -2,18 +2,15 @@ package model;
 
 import model.data.Data;
 
-import java.lang.ref.SoftReference;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class SimpleModel implements Model {
 
-    private Data data;
-    private Words words;
-    private Set<Snapshot> snapshots;
-    private Set<Word> insertWords;
+    protected Data data;
+    protected Words words;
+    protected Set<Snapshot> snapshots;
 
     public SimpleModel(Data data) {
         this.data = data;
@@ -23,13 +20,10 @@ public class SimpleModel implements Model {
     public void startBusinessLogic() {
         initialize();
         createSnapshots();
-        long start = System.currentTimeMillis();
-        insertWords();
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
+        snapshots = getResult(snapshots);
     }
 
-    private void createSnapshots() {
+    protected void createSnapshots() {
         List<Word> wordList = words.getHorizontalList();
         for (Word word : wordList
         ) {
@@ -37,10 +31,10 @@ public class SimpleModel implements Model {
         }
     }
 
-    private void insertWords() {
-        boolean isEnd = true;
+    private Set<Snapshot> insertWords(Set<Snapshot> snapshots) {
         Set<Snapshot> newSnapshots = new HashSet<>();
         Set<Word> wordsInSnapshot;
+        Set<Word> insertWords;
         List<Coordinate> coordinates;
         Snapshot newSnapshot;
         for (Snapshot snapshot : snapshots
@@ -48,6 +42,7 @@ public class SimpleModel implements Model {
             wordsInSnapshot = snapshot.getMap().keySet();
             for (Word snapWord : wordsInSnapshot
             ) {
+                insertWords = words.getMap().get(snapWord);
                 for (Word insWord : insertWords
                 ) {
                     coordinates = snapshot.startCoordinatesForInsert(insWord, snapWord);
@@ -56,25 +51,30 @@ public class SimpleModel implements Model {
                         if (snapshot.canInsert(insWord, coordinate)) {
                             newSnapshot = new Snapshot(snapshot);
                             newSnapshot.addWord(insWord, coordinate);
-                            isEnd = false;
                             newSnapshots.add(newSnapshot);
                         }
                     }
                 }
             }
         }
-        if (!isEnd) {
-            snapshots = newSnapshots;
-            insertWords();
-        }
+        return newSnapshots;
     }
 
-    private void initialize() {
+    protected Set<Snapshot> getResult(Set<Snapshot> snapshots) {
+        Set<Snapshot> result = null;
+        while (snapshots.size() != 0) {
+            snapshots = insertWords(snapshots);
+            if (snapshots.size() != 0) {
+                result = snapshots;
+            }
+        }
+        return result;
+    }
+
+    protected void initialize() {
         words = new Words(data);
-        words.fillLists();
+        words.initialize();
         snapshots = new HashSet<>();
-        insertWords = new HashSet<>(words.getHorizontalList());
-        insertWords.addAll(words.getVerticalList());
     }
 
     @Override
@@ -85,5 +85,9 @@ public class SimpleModel implements Model {
     @Override
     public Set<Snapshot> getSnapshots() {
         return snapshots;
+    }
+
+    private boolean toBig(Snapshot snapshot, Snapshot newSnapshot) {
+        return newSnapshot.getSquare() > snapshot.getSquare() * 4;
     }
 }
